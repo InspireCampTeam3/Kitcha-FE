@@ -68,26 +68,23 @@ const BoardDetailPage = () => {
     }
   };
 
+  // Presigned URL을 통한 파일 다운로드 
   const downloadHandler = async () => {
     try {
-      const res = await instance.get(`/board/apps/board/${boardId}/download`, {
-        responseType: 'blob',
-      });
-
-      if (res.data.size === 0) {
-        throw new Error('파일 내용이 비어 있습니다.');
+      const res = await instance.get(`/board/apps/board/${boardId}/download`);
+      const presignedUrl = res.data?.trim();
+  
+      if (!presignedUrl) {
+        throw new Error('Presigned URL이 존재하지 않습니다.');
       }
-
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${board.board_title}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-
-      document.body.removeChild(link);
+  
+      const a = document.createElement('a');
+      a.href = presignedUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.click();
     } catch (error) {
-      console.log('BoardDetail - downloadHandler() :: ', error);
+      console.error('Presigned URL 다운로드 실패:', error);
       openModal(errorMessage);
     }
   };
