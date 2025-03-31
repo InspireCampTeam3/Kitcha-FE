@@ -71,7 +71,7 @@ const BoardDetailPage = () => {
   // Presigned URL을 통한 파일 다운로드 
   const downloadHandler = async () => {
     try {
-      const res = await instance.get(`/board/apps/board/${boardId}/download`);
+      const res = await instance.get(`/file/apps/file/${boardId}/download`);
       const presignedUrl = res.data?.trim();
   
       if (!presignedUrl) {
